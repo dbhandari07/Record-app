@@ -1,0 +1,11 @@
+id,bill_no,bill_date,retailer_code,retailer_name,bill_amount,delivered,received_amount,discount,remaining_amount,payment_method,bank_name,cheque_no,cheq_rcv_date,cheq_exp_date,remaining_days,payment_closure,payment_closure_date,remarks,bounce,bounce1,bounce2,reason_bounce
+3,23,2024-06-17,R002,Retailer Two,23780.0,no,23789.0,3889.0,-3898.0,cash,dns,3469,2024-06-18,2024-06-19,1,tom,2024-06-19,hello,hello,hello,hello,iii
+8,1001,2024-06-21,5678,sabin,123456.0,no,456.0,190.0,12345.0,cash,laxmi,33456,2024-06-21,2024-06-24,4,no,2024-06-26,hello,hello,hello,hello,hello
+11,189,2024-06-24,R002,Retailer Two,12347.0,no,1234.0,200.0,10913.0,cash,,,,,,wednesday,2024-06-25,hy,hy,hy,hy,hy
+12,23,2024-06-17,23,hello,23780.0,yes,23789.0,3889.0,23789.0,cash,dns,3469,2024-06-18,2024-06-19,1,tom,2024-06-19,none,hello,hello,hello,none
+13,12367,2024-06-18,1236,rabindra,1233680.0,yes,376488.0,2378.0,23468.0,cash,rabindra,23789,2024-06-19,2024-06-20,1,tommorow,2024-06-19,hy,hy,hy,h,y
+14,20003,2024-06-21,5678,sabin,123456.0,no,456.0,190.0,12345.0,cash,laxmi,33456,2024-06-21,2024-06-24,4,no,2024-06-26,hello,hello,hello,hello,hello
+16,2367,2024-06-18,2378,hek,3678.0,yes,2378.0,100.0,23789.0,cash,dns,236788,2024-06-19,2024-06-21,2,thursday,2024-06-27,hello,hello,hello,hello,hello
+17,236,2024-06-17,67,dns,12358.0,yes,12356.0,289.0,12356.0,cash,laxmi,12368,2024-06-18,2024-06-18,2,thursday,2024-06-19,hello,hello,hello,hello,hewllo
+18,19,2024-06-19,6370,dns,12738.0,no,3389.0,27288.0,223678.0,cheques,dns,236687,2024-06-19,2024-06-20,1,tommorow,2024-06-20,hello,hello,hello,hello,hello
+19,20004,2024-06-21,5678,sabin,45006.0,no,456.0,190.0,12345.0,cash,laxmi,33456,2024-06-21,2024-06-24,4,no,2024-06-26,hello,hello,hello,hello,hello

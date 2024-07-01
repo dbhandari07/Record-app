@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Record Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        .body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            background-color: #adb5bd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        .form-container .textbox {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container .btn:hover {
+            background-color: #0056b3;
+        }
+        .form-container .msg {
+            margin-bottom: 20px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+{% include 'navbar.html' %}
+{% include 'base-body.html' %}
+<div class="body">
+    <div class="form-container">
+        <h2 class="text-center">Record Form</h2>
+        <form action="{{ url_for('record_new') }}" method="post" autocomplete="off">
+            <div class="msg">{{ msg }}</div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="bill_no">Bill No</label>
+                    <input type="search" name="bill_no" placeholder="Enter Your Bill Number" class="textbox" id="bill_no">
+                </div>
+                <div class="col-md-4">
+                    <label for="bill_date">Choose Bill Date</label>
+                    <input type="date" name="bill_date" placeholder="Enter the Date" class="textbox" id="bill_date">
+                </div>
+                <div class="col-md-4">
+                    <label for="retailer_code">Retailer Code</label>
+                    <input type="text" name="retailer_code" placeholder="Enter the Retailer Code" class="textbox" id="retailer_code">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="retailer_name">Retailer Name</label>
+                    <input type="text" name="retailer_name" placeholder="Enter The Retailer Name" class="textbox" id="retailer_name">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="bill_amount">Bill Amount</label>
+                    <input type="text" name="bill_amount" placeholder="Enter The Bill Amount" class="textbox" id="bill_amount">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="delivered">Delivered</label>
+                    <input type="text" name="delivered" placeholder="Delivered" class="textbox" id="delivered">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="received_amount">Received Amount</label>
+                    <input type="text" name="received_amount" placeholder="Enter the Received Amount" class="textbox" id="received_amount">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="discount">Discount</label>
+                    <input type="text" name="discount" placeholder="Enter the Discount Amount" class="textbox" id="discount">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="remaining_amount">Remaining Amount</label>
+                    <input type="text" name="remaining_amount" placeholder="Enter the Remaining Amount" class="textbox" id="remaining_amount" >
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="payment_method">Payment Method</label>
+                    <select class="form-control" id="payment_method" name="payment_method" onchange="toggleChequeFields()">
+                        <option value="cash">Cash</option>
+                        <option value="due">Due</option>
+                        <option value="cheque">Cheque</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="cheque_fields" style="display: none;">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="bank_name">Name of Bank/Cooperative</label>
+                        <input type="text" name="bank_name" placeholder="Enter the Bank/Cooperative Name" class="textbox" id="bank_name">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="cheque_no">Cheque Number</label>
+                        <input type="text" name="cheque_no" placeholder="Enter the Cheque Number" class="textbox" id="cheque_no">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="cheq_rcv_date">Cheque Received Date</label>
+                        <input type="date" name="cheq_rcv_date" class="textbox" id="cheq_rcv_date">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="cheq_exp_date">Cheque Date</label>
+                        <input type="date" name="cheq_exp_date" class="textbox" id="cheq_exp_date">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="remaining_days">Remaining Days</label>
+                        <input type="number" name="remaining_days" placeholder="Enter The Remaining Days" class="textbox" id="remaining_days" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="payment_closure">Payment Closure</label>
+                    <input type="text" name="payment_closure" placeholder="Enter Payment closure" class="textbox" id="payment_closure">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="payment_closure_date">Payment Closure Date</label>
+                    <input type="date" name="payment_closure_date" class="textbox" id="payment_closure_date">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="remarks">Remarks</label>
+                    <textarea name="remarks" placeholder="Enter Remarks" class="textbox" id="remarks"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="bounce">Bounce</label>
+                    <input type="text" name="bounce" placeholder="Enter Bounce" class="textbox" id="bounce">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="bounce1">Bounce1</label>
+                    <input type="text" name="bounce1" placeholder="Enter Bounce1" class="textbox" id="bounce1">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#bill_no').on('input', function() {
+            var billNo = $(this).val();
+            if (billNo) {
+                $.ajax({
+                    url: '/get_record/' + billNo,
+                    type: 'GET',
+                    success: function(data) {
+                        if (data.error) {
+                            alert(data.error);
+                            $('#retailer_code').val('');
+                            $('#retailer_name').val('');
+                            $('#remaining_amount').val('');
+                            $('#bill_amount').val('');
+                            $('#delivered').val('');
+                            $('#received_amount').val('');
+                            $('#discount').val('');
+                            $('#remaining_amount').val('');
+                            $('#bill_date').val('');
+                        } else {
+                            $('#retailer_code').val(data.retailer_code);
+                            $('#retailer_name').val(data.retailer_name);
+                            $('#remaining_amount').val(data.remaining_amount);
+                            $('#bill_amount').val(data.bill_amount);
+                            $('#delivered').val(data.delivered);
+                            $('#received_amount').val(data.received_amount);
+                            $('#discount').val(data.discount);
+                            $('#remaining_amount').val(data.remaining_amount);
+                            $('#bill_date').val(data.bill_date);
+                        }
+                    },
+                    error: function() {
+                        alert('Error fetching record details');
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

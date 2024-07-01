@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Record Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+        .body {
+             /* Light background color for the body */
+            display: flex;
+            justify-content: center; */
+            align-items: center;
+            height: auto;
+            font-family: Arial, sans-serif; /* Font style */
+         }
+
+
+
+        .form-container {
+            background-color:  #adb5bd; /* Background color for the form */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+
+
+
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        .form-container .textbox {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container .btn:hover {
+            background-color: #0056b3;
+        }
+        .form-container .msg {
+            margin-bottom: 20px;
+            color: red;
+        }
+    </style>
+
+
+    <script>
+        function toggleChequeFields() {
+            var paymentMethod = document.getElementById('payment_method').value;
+            var chequeFields = document.getElementById('cheque_fields');
+            if (paymentMethod === 'cheque') {
+                chequeFields.style.display = 'block';
+            } else {
+                chequeFields.style.display = 'none';
+            }
+        }
+    </script>
+
+
+</head>
+
+<body>
+{% include 'navbar.html' %}
+{% include 'base-body.html' %}
+        <div class="body">
+
+            <div class="form-container">
+                <h2 class="text-center">Record Form</h2>
+                <form action="{{ url_for('update_record', record_id=record.0) }}" method="post">
+                    <div class="msg">{{ msg }}</div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="bill_no">Bill No</label>
+                            <input type="text" name="bill_no" class="textbox" id="bill_no" value="{{ record.1 }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="bill_date">Choose Bill Date</label>
+                            <input type="date" name="bill_date"  class="textbox" id="bill_date" value="{{ record.2 }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="retailer_code">Retailer Code</label>
+                            <input type="text" name="retailer_code"  class="textbox" id="retailer_code" value="{{ record.3 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="retailer_name">Retailer Name</label>
+                            <input type="text" name="retailer_name"  class="textbox" id="retailer_name" value="{{ record.4 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bill_amount">Bill Amount</label>
+                            <input type="text" name="bill_amount"  class="textbox" id="bill_amount" value="{{ record.5 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="delivered">Delivered</label>
+                            <input type="text" name="delivered"  class="textbox" id="delivered" value="{{ record.6 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="received_amount">Received Amount</label>
+                            <input type="text" name="received_amount"  class="textbox" id="received_amount" value="{{ record.7 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="discount">Discount</label>
+                            <input type="text" name="discount"  class="textbox" id="discount" value="{{ record.8 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="remaining_amount">Remaining Amount</label>
+                            <input type="text" name="remaining_amount" class="textbox" id="remaining_amount" value="{{ record.9 }}" readonly>
+
+                                <script>
+                                        function calculateRemainingAmount() {
+                                            const billAmount = parseFloat(document.getElementById('bill_amount').value) || 0;
+                                            const receivedAmount = parseFloat(document.getElementById('received_amount').value) || 0;
+                                            const discount = parseFloat(document.getElementById('discount').value) || 0;
+                                            const remainingAmount = billAmount - receivedAmount - discount;
+                                            document.getElementById('remaining_amount').value = remainingAmount.toFixed(2);
+                                        }
+                                        document.getElementById('bill_amount').addEventListener('input', calculateRemainingAmount);
+                                        document.getElementById('received_amount').addEventListener('input', calculateRemainingAmount);
+                                        document.getElementById('discount').addEventListener('input', calculateRemainingAmount);
+
+                                </script>
+
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="payment_method">Payment Method</label>
+                            <select class="form-control" id="payment_method" name="payment_method" onchange="toggleChequeFields()" value="{{ record.10 }}">
+                                <option value="cash">Cash</option>
+                                <option value="due">Due</option>
+                                <option value="cheque">Cheque</option>
+                            </select>
+                            <!-- <input type="text" name="payment_method" placeholder="Enter the Payment Method" class="textbox" id="payment_method" required> --->
+                        </div>
+                    </div>
+                <div id="cheque_fields" style="display: none;">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bank_name">Name of Bank/Cooperative</label>
+                            <input type="text" name="bank_name"  class="textbox" id="bank_name" value="{{ record.11 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="cheque_no">Cheque Number</label>
+                            <input type="text" name="cheque_no"  class="textbox" id="cheque_no" value="{{ record.12 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="cheq_rcv_date">Cheque Received Date</label>
+                            <input type="date" name="cheq_rcv_date" class="textbox" id="cheq_rcv_date" value="{{ record.13 }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cheq_exp_date">Cheque Date</label>
+                            <input type="date" name="cheq_exp_date" class="textbox" id="cheq_exp_date" value="{{ record.14 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="remaining_days">Remaining Days</label>
+                            <input type="number" name="remaining_days"  class="textbox" id="remaining_days" value="{{ record.15 }}" readonly>
+                                <script>
+                                    const cheqRcvDate = document.getElementById('cheq_rcv_date');
+                                    const cheqExpDate = document.getElementById('cheq_exp_date');
+                                    const remainingDays = document.getElementById('remaining_days');
+
+                                    function calculateRemainingDays() {
+                                        const rcvDate = new Date(cheqRcvDate.value);
+                                        const expDate = new Date(cheqExpDate.value);
+
+                                        if (rcvDate && expDate) {
+                                            const diffTime = Math.abs(expDate - rcvDate);
+                                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                            remainingDays.value = diffDays;
+                                        }
+                                    }
+
+                                    cheqRcvDate.addEventListener('change', calculateRemainingDays);
+                                    cheqExpDate.addEventListener('change', calculateRemainingDays);
+                                </script>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="payment_closure">Payment Closure</label>
+                            <input type="text" name="payment_closure" placeholder="Enter Payment closure" class="textbox" id="payment_closure" value="{{ record.16 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="payment_closure_date">Payment Closure Date</label>
+                            <input type="date" name="payment_closure_date" class="textbox" id="payment_closure_date" value="{{ record.17 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="remarks">Remarks</label>
+                            <textarea name="remarks" placeholder="Enter Remarks" class="textbox" id="remarks" value="{{ record.18 }}"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bounce">Bounce</label>
+                            <input type="text" name="bounce" placeholder="Enter Bounce" class="textbox" id="bounce" value="{{ record.19 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bounce1">Bounce1</label>
+                            <input type="text" name="bounce1" placeholder="Enter Bounce1" class="textbox" id="bounce1" value="{{ record.20 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bounce2">Bounce2</label>
+                            <input type="text" name="bounce2" placeholder="Enter Bounce2" class="textbox" id="bounce2" value="{{ record.21 }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="reason_bounce">Reason For Bounce</label>
+                            <textarea name="reason_bounce" placeholder="Enter Reason For Bounce" class="textbox" id="reason_bounce" value="{{ record.22 }}"></textarea>
+                        </div>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary btn-lg" value="Update Record">
+                </form>
+            </div>
+        </div>
+</body>
+</html>

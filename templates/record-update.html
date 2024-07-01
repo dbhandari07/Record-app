@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Record Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            background-color: #adb5bd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        .form-container .textbox {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container .btn:hover {
+            background-color: #0056b3;
+        }
+        .form-container .msg {
+            margin-bottom: 20px;
+            color: red;
+        }
+    </style>
+
+         <script>
+        function toggleChequeFields() {
+            var paymentMethod = document.getElementById('payment_method').value;
+            var chequeFields = document.getElementById('cheque_fields');
+            if (paymentMethod === 'cheque') {
+                chequeFields.style.display = 'block';
+            } else {
+                chequeFields.style.display = 'none';
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+{% include 'base-body.html' %}
+    <div class="body">
+        <div class="form-container">
+            <h2 class="text-center">Record Form</h2>
+            <form autocomplete="off" id="recordForm" action="" method="POST">
+                <input type="hidden" name="record_id" id="record_id" value="">
+                <input type="hidden" name="original_bill_date" id="original_bill_date">
+                <input type="hidden" name="original_payment_closure_date" id="original_payment_closure_date">
+                <div class="msg" id="msg"></div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="bill_no">Bill No</label>
+                        <input type="text" name="bill_no" placeholder="Enter Your Bill Number" class="textbox" id="bill_no" value="{{  record.bill_no if record else ''  }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="bill_date">Choose Bill Date</label>
+                        <input type="text" name="bill_date" class="textbox" id="bill_date">
+
+                    </div>
+                    <div class="col-md-4">
+                        <label for="retailer_code">Retailer Code</label>
+                        <input type="text" name="retailer_code" placeholder="Enter the Retailer Code" class="textbox" id="retailer_code" value="{{  record.retailer_code if record else ''  }}">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="retailer_name">Retailer Name</label>
+                            <input type="text" name="retailer_name" placeholder="Enter The Retailer Name" class="textbox" id="retailer_name" value="{{  record.id if record else ''  }}" required>
+                        </div>
+                    </div>
+
+                <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="bill_amount">Bill Amount</label>
+                    <input type="text" name="bill_amount" placeholder="Enter The Bill Amount" class="textbox" id="bill_amount" value="{{  record.id if record else ''  }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="delivered">Delivered</label>
+                    <input type="text" name="delivered" placeholder="Delivered" class="textbox" id="delivered" value="{{  record.delivered if record else ''  }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="received_amount">Received Amount</label>
+                    <input type="text" name="received_amount" placeholder="Enter the Received Amount" class="textbox" id="received_amount" value="{{  record.received_amount if record else ''  }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="discount">Discount</label>
+                    <input type="text" name="discount" placeholder="Enter the Discount Amount" class="textbox" id="discount" value="{{  record.discount if record else ''  }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="remaining_amount">Remaining Amount</label>
+                    <input type="text" name="remaining_amount" placeholder="Enter the Remaining Amount" class="textbox" id="remaining_amount" value="{{  record.remaining_amount if record else ''  }}">
+
+                             <script>
+                                        function calculateRemainingAmount() {
+                                            const billAmount = parseFloat(document.getElementById('bill_amount').value) || 0;
+                                            const receivedAmount = parseFloat(document.getElementById('received_amount').value) || 0;
+                                            const discount = parseFloat(document.getElementById('discount').value) || 0;
+                                            const remainingAmount = billAmount - receivedAmount - discount;
+                                            document.getElementById('remaining_amount').value = remainingAmount.toFixed(2);
+                                        }
+                                        document.getElementById('bill_amount').addEventListener('input', calculateRemainingAmount);
+                                        document.getElementById('received_amount').addEventListener('input', calculateRemainingAmount);
+                                        document.getElementById('discount').addEventListener('input', calculateRemainingAmount);
+
+                                </script>
+
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="payment_method">Payment Method</label>
+                    <select class="form-control" id="payment_method" name="payment_method" onchange="toggleChequeFields()" value="{{  record.payment_method if record else ''  }}">
+                        <option value="cash">Cash</option>
+                        <option value="due">Due</option>
+                        <option value="cheque">Cheque</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="cheque_fields" style="display: none;">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="bank_name">Name of Bank/Cooperative</label>
+                        <input type="text" name="bank_name" placeholder="Enter the Bank/Cooperative Name" class="textbox" id="bank_name" value="{{  record.bank_name if record else ''  }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="cheque_no">Cheque Number</label>
+                        <input type="text" name="cheque_no" placeholder="Enter the Cheque Number" class="textbox" id="cheque_no" value="{{  record.cheque_no if record else ''  }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="cheq_rcv_date">Cheque Received Date</label>
+                        <input type="text" name="cheq_rcv_date" class="textbox" id="cheq_rcv_date" value="{{  record.cheq_rcv_date if record else ''  }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="cheq_exp_date">Cheque Date</label>
+                        <input type="text" name="cheq_exp_date" class="textbox" id="cheq_exp_date" value="{{  record.cheq_exp_date if record else ''  }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="remaining_days">Remaining Days</label>
+                        <input type="number" name="remaining_days" placeholder="Enter The Remaining Days" class="textbox" id="remaining_days" value="{{  record.remaining_days if record else ''  }}" readonly >
+
+                        <script>
+                                    const cheqRcvDate = document.getElementById('cheq_rcv_date');
+                                    const cheqExpDate = document.getElementById('cheq_exp_date');
+                                    const remainingDays = document.getElementById('remaining_days');
+
+                                    function calculateRemainingDays() {
+                                        const rcvDate = new Date(cheqRcvDate.value);
+                                        const expDate = new Date(cheqExpDate.value);
+
+                                        if (rcvDate && expDate) {
+                                            const diffTime = Math.abs(expDate - rcvDate);
+                                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                            remainingDays.value = diffDays;
+                                        }
+                                    }
+
+                                    cheqRcvDate.addEventListener('change', calculateRemainingDays);
+                                    cheqExpDate.addEventListener('change', calculateRemainingDays);
+                                </script>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="payment_closure">Payment Closure</label>
+                    <input type="text" name="payment_closure" placeholder="Enter Payment closure" class="textbox" id="payment_closure" value="{{  record.payment_closure if record else ''  }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="payment_closure_date">Payment Closure Date</label>
+                    <input type="text" name="payment_closure_date" class="textbox" id="payment_closure_date" value="{{  record.payment_closure_date if record else ''  }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="remarks">Remarks</label>
+                    <textarea name="remarks" placeholder="Enter Remarks" class="textbox" id="remarks" value="{{  record.remarks if record else ''  }}"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="bounce">Bounce</label>
+                    <input type="text" name="bounce" placeholder="Enter Bounce" class="textbox" id="bounce">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="bounce1">Bounce1</label>
+                    <input type="text" name="bounce1" placeholder="Enter Bounce1" class="textbox" id="bounce1" value="{{  record.bounce1 if record else ''  }}">
+                </div>
+            </div>
+
+             <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="bounce1">Bounce2</label>
+                    <input type="text" name="bounce2" placeholder="Enter Bounce2" class="textbox" id="bounce2" value="{{  record.bounce2 if record else ''  }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="reason_bounce">Reason For Bounce</label>
+                    <input type="text" name="reason_bounce" placeholder="Enter Bounce2" class="textbox" id="reason_bounce" value="{{  record.reason_bounce if record else ''  }}">
+                </div>
+            </div>
+
+                <!-- Add more fields as per your requirement -->
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary" id="addRecordBtn">Add Record</button>
+                        <button type="button" class="btn btn-success" id="updateRecordBtn">Update Record</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+            $(document).ready(function() {
+                let typingTimer;
+                const typingDelay = 500; // Delay in milliseconds
+
+                $('#bill_no').on('input', function() {
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(fetchRecord, typingDelay);
+                });
+
+                $('#bill_no').on('keydown', function() {
+                    clearTimeout(typingTimer);
+                });
+
+                function fetchRecord() {
+                    var bill_no = $('#bill_no').val();
+                    if (bill_no) {
+                        $.ajax({
+                            url: '/get_bill_details',
+                            type: 'GET',
+                            data: { bill_no: bill_no },
+                            success: function(response) {
+                                if (response) {
+                                    $('#record_id').val(response.id);
+                                    $('#bill_date').val(formatDate(response.bill_date));
+                                    $('#retailer_code').val(response.retailer_code);
+                                    $('#retailer_name').val(response.retailer_name);
+                                    $('#bill_amount').val(response.bill_amount);
+                                    $('#delivered').val(response.delivered);
+                                    $('#received_amount').val(response.received_amount);
+                                    $('#discount').val(response.discount);
+                                    $('#remaining_amount').val(response.remaining_amount);
+                                    $('#payment_method').val(response.payment_method).change();
+                                    $('#bank_name').val(response.bank_name);
+                                    $('#cheque_no').val(response.cheque_no);
+                                    $('#cheq_rcv_date').val(formatDate(response.cheq_rcv_date));
+                                    $('#cheq_exp_date').val(formatDate(response.cheq_exp_date));
+                                    $('#remaining_days').val(formatDate(response.remaining_days));
+
+
+                                    $('#payment_closure').val(response.payment_closure);
+                                    $('#payment_closure_date').val(formatDate(response.payment_closure_date));
+                                    $('#remarks').val(response.remarks);
+                                    $('#bounce').val(response.bounce);
+                                    $('#bounce1').val(response.bounce1);
+                                    $('#bounce2').val(response.bounce2);
+                                    $('#reason_bounce').val(response.reason_bounce);
+                                    $('#msg').text('');
+                                } else {
+                                    $('#msg').text('No record found for this bill number.');
+                                    clearFormFields();
+                                }
+                            },
+                            error: function(error) {
+                                $('#msg').text('Error fetching record. Please try again.');
+                            }
+                        });
+                    }
+                }
+
+
+                function formatDate(dateString) {
+                    if (!dateString) return '';
+                    const date = new Date(dateString);
+                    const year = date.getFullYear();
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    const day = date.getDate().toString().padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                }
+
+                function clearFormFields() {
+                    $('#record_id').val('');
+                    $('#bill_date').val('');
+                    $('#retailer_code').val('');
+                    $('#retailer_name').val('');
+                    $('#bill_amount').val('');
+                    $('#delivered').val('');
+                    $('#received_amount').val('');
+                    $('#discount').val('');
+                    $('#remaining_amount').val('');
+                    $('#payment_method').val('');
+                    $('#bank_name').val('');
+                    $('#cheque_no').val('');
+                    $('#cheq_rcv_date').val('');
+                    $('#cheq_exp_date').val('');
+                    $('#remaining_days').val('');
+                    $('#payment_closure').val('');
+                    $('#payment_closure_date').val('');
+                    $('#remarks').val('');
+                    $('#bounce').val('');
+                    $('#bounce1').val('');
+                    $('#bounce2').val('');
+                    $('#reason_bounce').val('');
+                }
+
+                $('#addRecordBtn').click(function() {
+                    $('#recordForm').attr('action', '/add_record_new');
+                    $('#recordForm').submit();
+                });
+
+                $('#updateRecordBtn').click(function() {
+                    $('#recordForm').attr('action', '/update_record_new');
+                    $('#recordForm').submit();
+                });
+
+                // On form submission, ensure dates are correctly handled
+                $("#recordForm").on("submit", function(event) {
+                    var billDate = $("#bill_date").val();
+                    var paymentClosureDate = $("#payment_closure_date").val();
+
+                    if (!billDate) {
+                        $("#bill_date").val($("#original_bill_date").val());
+                    }
+                    if (!paymentClosureDate) {
+                        $("#payment_closure_date").val($("#original_payment_closure_date").val());
+                    }
+                });
+            });
+    </script>
+
+    <script>
+            document.getElementById('recordForm').addEventListener('submit', function(event) {
+                let bill_no = document.getElementById('bill_no').value;
+                let bill_amount = document.getElementById('bill_amount').value;
+                let received_amount = document.getElementById('received_amount').value;
+                let discount = document.getElementById('discount').value;
+                let bill_date = document.getElementById('bill_date').value;
+
+                console.log('Bill No:', bill_no);
+                console.log('Bill Amount:', bill_amount);
+                console.log('Received Amount:', received_amount);
+                console.log('Discount:', discount);
+                console.log('Bill Date:', bill_date);
+
+                if (isNaN(bill_no) || bill_no.trim() === '') {
+                    alert('Bill number must be a valid number');
+                    event.preventDefault();
+                }
+
+                if (bill_date.trim() === '') {
+                    alert('Bill date must not be empty');
+                    event.preventDefault();
+                }
+
+                if (isNaN(bill_amount) || bill_amount.trim() === '') {
+                    alert('Bill amount must be a valid number');
+                    event.preventDefault();
+                }
+
+                if (isNaN(received_amount) || received_amount.trim() === '') {
+                    alert('Received amount must be a valid number');
+                    event.preventDefault();
+                }
+
+                if (isNaN(discount) || discount.trim() === '') {
+                    alert('Discount must be a valid number');
+                    event.preventDefault();
+                }
+            });
+    </script>
+
+
+</body>
+</html>

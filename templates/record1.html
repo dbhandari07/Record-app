@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Record Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+
+        .body {
+             /* Light background color for the body */
+            display: flex;
+            justify-content: center; */
+            align-items: center;
+            height: auto;
+            font-family: Arial, sans-serif; /* Font style */
+         }
+
+
+
+        .form-container {
+            background-color:  #adb5bd; /* Background color for the form */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+
+
+
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        .form-container .textbox {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container .btn:hover {
+            background-color: #0056b3;
+        }
+        .form-container .msg {
+            margin-bottom: 20px;
+            color: red;
+        }
+    </style>
+
+
+    <script>
+        function toggleChequeFields() {
+            var paymentMethod = document.getElementById('payment_method').value;
+            var chequeFields = document.getElementById('cheque_fields');
+            if (paymentMethod === 'cheque') {
+                chequeFields.style.display = 'block';
+            } else {
+                chequeFields.style.display = 'none';
+            }
+        }
+    </script>
+
+
+</head>
+
+<body>
+{% include 'navbar.html' %}
+{% include 'base-body.html' %}
+        <div class="body">
+
+            <div class="form-container">
+                <h2 class="text-center">Record Form</h2>
+                <form action="{{ url_for('add_record') }}" method="post" autocomplete="off">
+                    <div class="msg">{{ msg }}</div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="bill_no">Bill No</label>
+                            <input type="text" name="bill_no" placeholder="Enter Your Bill Number" class="textbox" id="bill_no" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="bill_date">Choose Bill Date</label>
+                            <input type="date" name="bill_date" placeholder="Enter the Date" class="textbox" id="bill_date" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="retailer_code">Retailer Code</label>
+                            <input type="text" name="retailer_code" placeholder="Enter the Retailer Code" class="textbox" id="retailer_code" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="retailer_name">Retailer Name</label>
+                            <input type="text" name="retailer_name" placeholder="Enter The Retailer Name" class="textbox" id="retailer_name" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bill_amount">Bill Amount</label>
+                            <input type="text" name="bill_amount" placeholder="Enter The Bill Amount" class="textbox" id="bill_amount" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="delivered">Delivered</label>
+                            <input type="text" name="delivered" placeholder="Delivered" class="textbox" id="delivered" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="received_amount">Received Amount</label>
+                            <input type="text" name="received_amount" placeholder="Enter the Received Amount" class="textbox" id="received_amount" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="discount">Discount</label>
+                            <input type="text" name="discount" placeholder="Enter the Discount Amount" class="textbox" id="discount" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="remaining_amount">Remaining Amount</label>
+                            <input type="text" name="remaining_amount" placeholder="Enter the Remaining Amount" class="textbox" id="remaining_amount" readonly>
+
+                                <script>
+                                        function calculateRemainingAmount() {
+                                            const billAmount = parseFloat(document.getElementById('bill_amount').value) || 0;
+                                            const receivedAmount = parseFloat(document.getElementById('received_amount').value) || 0;
+                                            const discount = parseFloat(document.getElementById('discount').value) || 0;
+                                            const remainingAmount = billAmount - receivedAmount - discount;
+                                            document.getElementById('remaining_amount').value = remainingAmount.toFixed(2);
+                                        }
+                                        document.getElementById('bill_amount').addEventListener('input', calculateRemainingAmount);
+                                        document.getElementById('received_amount').addEventListener('input', calculateRemainingAmount);
+                                        document.getElementById('discount').addEventListener('input', calculateRemainingAmount);
+
+                                </script>
+
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="payment_method">Payment Method</label>
+                            <select class="form-control" id="payment_method" name="payment_method" onchange="toggleChequeFields()" required>
+                                <option value="cash">Cash</option>
+                                <option value="due">Due</option>
+                                <option value="cheque">Cheque</option>
+                            </select>
+                            <!-- <input type="text" name="payment_method" placeholder="Enter the Payment Method" class="textbox" id="payment_method" required> --->
+                        </div>
+                    </div>
+                <div id="cheque_fields" style="display: none;">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bank_name">Name of Bank/Cooperative</label>
+                            <input type="text" name="bank_name" placeholder="Enter the Bank/Cooperative Name" class="textbox" id="bank_name">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="cheque_no">Cheque Number</label>
+                            <input type="text" name="cheque_no" placeholder="Enter the Cheque Number" class="textbox" id="cheque_no">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="cheq_rcv_date">Cheque Received Date</label>
+                            <input type="date" name="cheq_rcv_date" class="textbox" id="cheq_rcv_date">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cheq_exp_date">Cheque Date</label>
+                            <input type="date" name="cheq_exp_date" class="textbox" id="cheq_exp_date">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="remaining_days">Remaining Days</label>
+                            <input type="number" name="remaining_days" placeholder="Enter The Remaining Days" class="textbox" id="remaining_days" readonly>
+                                <script>
+                                    const cheqRcvDate = document.getElementById('cheq_rcv_date');
+                                    const cheqExpDate = document.getElementById('cheq_exp_date');
+                                    const remainingDays = document.getElementById('remaining_days');
+
+                                    function calculateRemainingDays() {
+                                        const rcvDate = new Date(cheqRcvDate.value);
+                                        const expDate = new Date(cheqExpDate.value);
+
+                                        if (rcvDate && expDate) {
+                                            const diffTime = Math.abs(expDate - rcvDate);
+                                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                            remainingDays.value = diffDays;
+                                        }
+                                    }
+
+                                    cheqRcvDate.addEventListener('change', calculateRemainingDays);
+                                    cheqExpDate.addEventListener('change', calculateRemainingDays);
+                                </script>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="payment_closure">Payment Closure</label>
+                            <input type="text" name="payment_closure" placeholder="Enter Payment closure" class="textbox" id="payment_closure">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="payment_closure_date">Payment Closure Date</label>
+                            <input type="date" name="payment_closure_date" class="textbox" id="payment_closure_date">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="remarks">Remarks</label>
+                            <textarea name="remarks" placeholder="Enter Remarks" class="textbox" id="remarks"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bounce">Bounce</label>
+                            <input type="text" name="bounce" placeholder="Enter Bounce" class="textbox" id="bounce">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bounce1">Bounce1</label>
+                            <input type="text" name="bounce1" placeholder="Enter Bounce1" class="textbox" id="bounce1">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="bounce2">Bounce2</label>
+                            <input type="text" name="bounce2" placeholder="Enter Bounce2" class="textbox" id="bounce2">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="reason_bounce">Reason For Bounce</label>
+                            <textarea name="reason_bounce" placeholder="Enter Reason For Bounce" class="textbox" id="reason_bounce"></textarea>
+                        </div>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary btn-lg" value="Add Record">
+                </form>
+            </div>
+        </div>
+
+
+    <script>
+        $(document).ready(function() {
+            $('#bill_no').on('input', function() {  // Use 'input' event for real-time typing
+                var billNo = $(this).val();
+                if (billNo) {
+                    $.ajax({
+                        url: '/get_record/' + billNo,
+                        type: 'GET',
+                        success: function(data) {
+                            if (data.error) {
+                                alert(data.error);
+                                $('#retailer_code').val('');
+                                $('#retailer_name').val('');
+                                $('#remaining_amount').val('');
+                                // Clear other fields as needed
+                            } else {
+                                $('#retailer_code').val(data.retailer_code);
+                                $('#retailer_name').val(data.retailer_name);
+                                $('#remaining_amount').val(data.remaining_amount);
+                                // Populate other fields as needed
+                            }
+                        },
+                        error: function() {
+                            alert('Error fetching record details');
+                        }
+                    });
+                }
+            });
+        });
+
+         if (typeof jQuery === 'undefined') {
+                console.error('jQuery is not loaded');
+         } else {
+                console.log('jQuery is loaded');
+         }
+    </script>
+
+
+
+</body>
+</html>
